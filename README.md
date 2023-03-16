@@ -7,11 +7,12 @@ The project is in the beta stage, please be careful.
 ```php
 // Create an instance
 $smartCircuitBreaker = Scb::getInstance();
+
 // Add logger
 $logger = new LogWrapper();
 $smartCircuitBreaker->setLogger($logger);
 
-// Wrap your code around circuit breaker
+// Put your code inside the circuit breaker
 $smartCircuitBreaker->item("dummy")->execute(function () {
         // Call some service, or DB
         //throw new \Exception("Dummy exception");
@@ -24,10 +25,12 @@ $smartCircuitBreaker->item("dummy")->execute(function () {
 ```php
 // Create an instance
 $smartCircuitBreaker = Scb::getInstance();
+
 // Add logger
 $logger = new LogWrapper();
 $smartCircuitBreaker->setLogger($logger);
 
+// Put your code inside the circuit breaker
 $smartCircuitBreaker->item("curl-item")->execute(function() {
     $url = "https://www.some-not-existing-url.com/";
     $ch = curl_init();
