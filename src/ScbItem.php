@@ -41,6 +41,14 @@ class ScbItem {
         $this->_storage->set($this->_serverStatus);
     }
 
+    public function getTtlForFail() {
+        if (isset($this->_conf['ttlForFail'])) {
+            return $this->_conf['ttlForFail'];
+        } else {
+            return 60;// default ttl
+        }
+    }
+
     public function addIgnoredException(\Exception $exception) {
         $this->_ignoredExceptions[] = get_class($exception);
     }
@@ -56,14 +64,14 @@ class ScbItem {
 
         try {
             if ($this->isClosed()) { // if the circuit breaker is closed
-                $this->_logger->logDebug("CB is closed, executing code");
+                $this->_logger->debug("CB is closed, executing code");
                 $res = $code();
                 $this->success();
                 return $res;
             } else if ($this->isOpen()) { // open
-                $this->_logger->logDebug("CB is open");
+                $this->_logger->debug("CB is open");
                 if ($this->_needToTry()) {
-                    $this->_logger->logDebug("CB is open, retrying");
+                    $this->_logger->debug("CB is open, retrying");
                     $res = $code();
                     $this->success();
                     return $res;
@@ -72,10 +80,10 @@ class ScbItem {
                 throw new ScbException();
             }
         } catch (\Exception $e) {
-            $this->_logger->logDebug("Exception in execution");
+            $this->_logger->debug("Exception in execution");
             $exceptionClassName = get_class($e);
             if (in_array($exceptionClassName, $this->_ignoredExceptions)) {
-                $this->_logger->logDebug("Exception found in ignored list");
+                $this->_logger->debug("Exception found in ignored list");
                 $this->success($e);
                 throw $e;
             } else {
@@ -109,7 +117,7 @@ class ScbItem {
 
         // If the lastUpdate > than ttl we should reset status
         if ($this->_serverStatus->getLastUpdate() + $this->_conf['ttlForFail'] < time()) {
-            $this->_logger->logDebug("Resetting CB status");
+            $this->_logger->debug("Resetting CB status");
             $this->_serverStatus = new ScbStatus($this->_name);
         }
 
@@ -117,8 +125,8 @@ class ScbItem {
     }
 
     public function fail($exception = '') {
-        $this->_logger->logDebug("Logging Fail");
-        $this->_logger->logError($exception);
+        $this->_logger->debug("Logging Fail");
+        $this->_logger->error($exception);
         $this->_serverStatus->incrFailedCalls();
         // check threshold
         if ($this->_serverStatus->getFailedCalls() > $this->_conf['numberOfErrorsToOpen']) {
@@ -130,15 +138,15 @@ class ScbItem {
             }
             $this->_serverStatus->setLastUpdate(time());
 
-            $this->_logger->logDebug("Set status: " . ScbTools::scbStatus2json($this->_serverStatus));
-            $this->_logger->logDebug("Circuit breaker is open. Number of errors exceeded threshold: " . $this->_conf['numberOfErrorsToOpen']);
+            $this->_logger->debug("Set status: " . ScbTools::scbStatus2json($this->_serverStatus));
+            $this->_logger->debug("Circuit breaker is open. Number of errors exceeded threshold: " . $this->_conf['numberOfErrorsToOpen']);
         }
     }
 
     public function success($exception = '') {
-        $this->_logger->logDebug("Logging success");
+        $this->_logger->debug("Logging success");
         if (!empty($exception)) {
-            $this->_logger->logDebug($exception);
+            $this->_logger->debug($exception);
         }
         if ($this->isOpen()) {
             // We need to close CB

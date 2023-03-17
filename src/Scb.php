@@ -5,7 +5,7 @@ include "storage/StorageInterface.php";
 include "storage/FileStorage.php";
 // Not implemented yet
 //include "storage/RedisStorage.php";
-//include "storage/MemcacheStorage.php";
+include "storage/MemcacheStorage.php";
 include "ScbException.php";
 include "ScbItem.php";
 include "ScbStatus.php";
@@ -87,7 +87,7 @@ class Scb {
             if (empty($conf)) {
                 $conf = $this->_getConfigForItem($name);
                 if (empty($conf)) {
-                    $this->_logger->logError("Can't find any config for the item '{$name}'");
+                    $this->_logger->error("Can't find any config for the item '{$name}'");
                     throw new ScbException("Can't find any config for the item '{$name}'");
                 }
             }
@@ -106,7 +106,7 @@ class Scb {
         }
 
         // return existing item
-        $this->_logger->logDebug("Item '{$name}' already exists!");
+        $this->_logger->debug("Item '{$name}' already exists!");
         return $this->_items[$name];
     }
 
@@ -132,10 +132,9 @@ class Scb {
             $storage = new FileStorage($conf);
         } else if ($type === self::STORAGE_REDIS) {
             // Not implemented yet
-            //$storage = new RedisStorage($this->_logger, $conf);
+            //$storage = new RedisStorage($conf);
         } else if ($type === self::STORAGE_MEMCACHE) {
-            // Not implemented yet
-            //$storage = new MemcacheStorage($this->_logger, $conf);
+            $storage = new MemcacheStorage($conf);
         }
         return $storage;
     }

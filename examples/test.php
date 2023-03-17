@@ -13,27 +13,38 @@ $smartCircuitBreaker = Scb::getInstance();
 $logger = new LogWrapper();
 $smartCircuitBreaker->setLogger($logger);
 
-// Run code with exception in a loop
+// Run code with the exception in a loop
 for ($i = 0; $i < 10; $i++) {
     try {
         $smartCircuitBreaker->item("dummy")->execute(function () {
-            if (true) {
-                throw new \Exception("Dummy exception");
-            }
+            throw new \Exception("Some exception");
         });
     } catch (\Exception $e) {
         $logger->debug("Exception in test.php  i={$i}");
     }
 }
 
-// Call dummy url
+// memcache test
+for ($i = 0; $i < 10; $i++) {
+    try {
+        // memcache-test item is specified in config.default.php
+        $smartCircuitBreaker->item("memcache-test")->execute(function () {
+            throw new \Exception("Some exception");
+        });
+    } catch (\Exception $e) {
+        $logger->debug("Memcache-test, exception in test.php  i={$i}");
+    }
+}
+
+
+// Call wrong url
 $smartCircuitBreaker->item("curl-item")->execute(function() {
     $url = "https://www.jgdlfkjgdfkjg.com/";
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_URL, $url);
     $res = curl_exec($ch);
-    if(curl_error($ch)) {
+    if (curl_error($ch)) {
         $errorMessage = curl_error($ch);
         curl_close($ch);
         throw new \Exception($errorMessage);

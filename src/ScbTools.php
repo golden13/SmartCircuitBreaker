@@ -60,7 +60,7 @@ class ScbTools {
                 $failedCalls = $array['failedCalls'];
             }
         } catch (\Exception $e) {
-            Scb::getInstance()->getLogger()->logError("Can't convert array to ScbStatus object");
+            Scb::getInstance()->getLogger()->error("Can't convert array to ScbStatus object");
         }
         $scbStatus = new ScbStatus($name, $status, $sleep, $failedCalls, $lastRetry, $lastUpdate);
         return $scbStatus;

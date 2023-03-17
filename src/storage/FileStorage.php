@@ -69,13 +69,6 @@ class FileStorage implements StorageInterface {
     }
 
     /**
-     * Not needed here
-     * @return void
-     */
-    public function connect() {
-    }
-
-    /**
      * Persists status info to the file system
      * @param ScbStatus $status
      * @return void
@@ -99,7 +92,7 @@ class FileStorage implements StorageInterface {
         }
 
         if ($result === false) {
-            Scb::getInstance()->getLogger()->logError("Can't write serversCache file: " . $this->_serverCacheFile);
+            Scb::getInstance()->getLogger()->error("Can't write serversCache file: " . $this->_serverCacheFile);
         }
     }
 }

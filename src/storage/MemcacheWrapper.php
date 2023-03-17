@@ -1,6 +1,8 @@
 <?php
 namespace Golden13\Scb;
 
+use Memcached;
+
 /**
  * Wrapper for Memcached lib
  */
