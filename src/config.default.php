@@ -47,3 +47,5 @@ $SCB_CFG = [
         ],
     ],
 ];
+
+return $SCB_CFG;

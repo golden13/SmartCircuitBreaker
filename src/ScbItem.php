@@ -38,7 +38,11 @@ class ScbItem {
 
     public function __destruct() {
         // write status into storage
-        $this->_storage->set($this->_serverStatus);
+        if (!empty($this->_storage)) {
+            if (!empty($this->_serverStatus)) { // if status is empty, we don't need to save anything
+                $this->_storage->set($this->_serverStatus);
+            }
+        }
     }
 
     public function getTtlForFail() {

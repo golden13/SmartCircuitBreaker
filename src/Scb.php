@@ -1,15 +1,18 @@
 <?php
 namespace Golden13\Scb;
 
-include "storage/StorageInterface.php";
-include "storage/FileStorage.php";
+include_once "storage/StorageInterface.php";
+include_once "storage/FileStorage.php";
 // Not implemented yet
-//include "storage/RedisStorage.php";
-include "storage/MemcacheStorage.php";
-include "ScbException.php";
-include "ScbItem.php";
-include "ScbStatus.php";
-include "ScbTools.php";
+//include_once "storage/RedisStorage.php";
+include_once "storage/MemcacheStorage.php";
+include_once "ScbException.php";
+include_once "ScbItem.php";
+include_once "ScbStatus.php";
+include_once "ScbTools.php";
+include_once "LoggerInterface.php";
+include_once "LogWrapper.php";
+
 
 /**
  * Main class for the Smart Circuit Breaker
@@ -58,19 +61,36 @@ class Scb {
         return $this->_logger;
     }
 
-    public function loadConfig($filename = '') {
+    protected function _loadDefaultLogger(): void {
+        if (empty($this->_logger)) {
+            $this->_logger = new LogWrapper();
+        }
+    }
+
+    /**
+     * @param string|array $source  path to config file, or config array
+     * @return void
+     */
+    public function loadConfig(array|string $source = ''): void {
+        $this->_loadDefaultLogger();
         $res = false;
-        if (!empty($filename)) {
-            $res = include_once $filename;
+        $config = [];
+
+        if (!empty($source)) {
+            if (is_array($source)) {
+                $config = $source;
+            } else {
+                $config = include $source;
+            }
+        } else {
+            $config = include dirname(__FILE__) . "/config.default.php";
         }
-        if (!$res) {
-            include_once dirname(__FILE__) . "/config.default.php";
-        }
-        /**
-         * @var array
-         * SCB_CFG is a part of config.default.php
-         */
-        $this->_conf = $SCB_CFG;
+
+        $this->_conf = $config;
+    }
+
+    public function getConfig() {
+        return $this->_conf;
     }
 
     /**

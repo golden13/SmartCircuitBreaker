@@ -74,6 +74,7 @@ class FileStorage implements StorageInterface {
      * @return void
      */
     public function set(ScbStatus $status) {
+        ///if (empty($status))
         if (empty($this->_serverCacheFile)) {
             $this->_buildCacheFileName();
         }
