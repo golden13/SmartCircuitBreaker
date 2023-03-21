@@ -1,7 +1,22 @@
-# SmartCircuitBreaker
+# Smart Circuit Breaker
 Different Implementation of Circuit Breaker pattern in PHP
+About pattern: [https://en.wikipedia.org/wiki/Circuit_breaker_design_pattern](https://en.wikipedia.org/wiki/Circuit_breaker_design_pattern)
 
-Scb class is a singleton.
+Minimum PHP version is 8.0
+
+_**WARNING: The project is in the beta stage so please be careful.**_
+
+**TODO:**
+1. Add more Unit tests
+2. Add enable/disable logic for Scb
+3. Add Redis storage
+4. Add Cascading logic to prevent dependant calls
+5. More examples
+6. Refactoring for Logging
+
+
+## Info
+Scb main class is a singleton.
 
 Initializing it you will create a main class for all your circuit breakers.
 Each item, created by the _item($name)_ method, represents a separate circuit breaker with different storage and configuration.
@@ -10,10 +25,10 @@ Each item, created by the _item($name)_ method, represents a separate circuit br
 // Each item should have a unique name.
 // Calling method item('xxx') will create a new item
 // or return the existing one.   
-$smartCircuitBreaker->item("my-code-part1");
+$smartCircuitBreaker->item("call-google-api-service");
 ```
 
-**Configuration**
+## **Configuration**
 
 Scb configuration is a php array. By default, the Scb uses the configuration stored in **config.default.php**
 
@@ -29,10 +44,17 @@ Scb configuration is a php array. By default, the Scb uses the configuration sto
     'items' => [
         // The * corresponds to any item, excluding specified as a separate item
         '*' => [
-            'numberOfErrorsToOpen' => 2, // Threshold to open circuit breaker
-            'ttlForFail' => 60, // after this amount of seconds, the status will be invalidated during the script init stage.
-            'timeoutsToRetry' => [0,1,2,3,4,5,10,15,20,30,45,60], // List of timeouts in seconds
-            'storage' => 'file', // file | redis | memcache
+            // Threshold to open circuit breaker
+            'numberOfErrorsToOpen' => 5,
+            
+            // after this amount of seconds, the status will be invalidated during the script init stage.
+            'ttlForFail' => 60,
+            
+            // List of timeouts in seconds
+            'timeoutsToRetry' => [0,1,2,3,4,5,10,15,20,30,45,60],
+            
+            // Storage type: 'file', 'redis' or 'memcache'
+            'storage' => 'file',
         ],
         /*
          *  Example of custom item:
@@ -46,24 +68,42 @@ Scb configuration is a php array. By default, the Scb uses the configuration sto
     ],
     // Storages
     'storages' => [
+        // File storage
         'file' => [
+            // Prefix for the file name
             'prefix' => 'scb_',
-            'path' => '/tmp', // no trailing slash
+            
+            // directory, no trailing slash
+            'path' => '/tmp',
         ],
-        'redis' => [
-            'prefix' => 'scb_',
-        ],
+        
+        // Memcache storage
         'memcache' => [
+            // Prefix for the key name
             'prefix' => 'scb_',
+            
+            // Memcache server hostname
             'host' => 'localhost',
+            
+            // Memcache server port
             'port' => '11211',
+            
+            // Enable igbinary
             'igbinaryEnabled' => false,
         ],
+        
+        // Redis storage
+        'redis' => [
+            // Prefix for the key name
+            'prefix' => 'scb_',
+        ],
+        
     ],
 ];
 ```
 
-_**The project is in the beta stage, please be careful.**_
+
+Many different examples can be found under _examples_ directory.
 
 **Example 0**
 ```php
@@ -124,5 +164,7 @@ $smartCircuitBreaker->item("curl-item")->execute(function() {
 
 ```
 
-
-Configuration for the Circuit Breaker can be found in **config.default.php** file
+## Storages
+For now only 2 types of storages are supported:
+1. File storage
+2. Memcache storage

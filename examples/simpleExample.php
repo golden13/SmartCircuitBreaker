@@ -1,7 +1,5 @@
 <?php
 include "../src/Scb.php";
-include "../src/LoggerInterface.php";
-include "../src/LogWrapper.php";
 
 use Golden13\Scb\Scb,Golden13\Scb\LogWrapper;
 
@@ -20,7 +18,7 @@ for ($i = 0; $i < 10; $i++) {
             throw new \Exception("Some exception");
         });
     } catch (\Exception $e) {
-        $logger->debug("Exception in test.php  i={$i}");
+        $logger->debug("Exception in simpleExample.php  i={$i}");
     }
 }
 
@@ -32,7 +30,7 @@ for ($i = 0; $i < 10; $i++) {
             throw new \Exception("Some exception");
         });
     } catch (\Exception $e) {
-        $logger->debug("Memcache-test, exception in test.php  i={$i}");
+        $logger->debug("Memcache-test, exception in simpleExample.php  i={$i}");
     }
 }
 

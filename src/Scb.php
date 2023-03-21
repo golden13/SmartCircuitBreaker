@@ -93,6 +93,13 @@ class Scb {
         return $this->_conf;
     }
 
+    public function isEnabled() {
+        if ($this->_conf['enabled']) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Return item by name. If the item is missing it will be created.
      *
