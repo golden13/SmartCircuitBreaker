@@ -1,5 +1,6 @@
 # Smart Circuit Breaker
 Different Implementation of Circuit Breaker pattern in PHP
+
 About pattern: [https://en.wikipedia.org/wiki/Circuit_breaker_design_pattern](https://en.wikipedia.org/wiki/Circuit_breaker_design_pattern)
 
 Minimum PHP version is 8.0
@@ -103,7 +104,7 @@ Scb configuration is a php array. By default, the Scb uses the configuration sto
 ```
 
 
-Many different examples can be found under _examples_ directory.
+Other examples can be found under _examples_ directory.
 
 **Example 0**
 ```php
