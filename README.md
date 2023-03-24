@@ -2,9 +2,12 @@
 Different Implementation of Circuit Breaker pattern in PHP
 About pattern: [https://en.wikipedia.org/wiki/Circuit_breaker_design_pattern](https://en.wikipedia.org/wiki/Circuit_breaker_design_pattern)
 
-Minimum PHP version is 8.0
+#### Requirements
+- PHP >= 8.0
+- Memcached for Memcache storage
+- Any PSR-3 logger on your chose.
 
-_**WARNING: The project is in the beta stage so please be careful.**_
+_**WARNING!: The project is in the beta stage so please be careful.**_
 
 **TODO:**
 1. Add more Unit tests

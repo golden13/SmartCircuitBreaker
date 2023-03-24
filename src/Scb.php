@@ -165,4 +165,15 @@ class Scb {
         }
         return $storage;
     }
+
+    /**
+     * Recreate Scb
+     * @return Scb|null
+     */
+    public static function reset() {
+        if (self::$_instance !== null) {
+            self::$_instance = new Scb();
+        }
+        return self::$_instance;
+    }
 }

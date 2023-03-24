@@ -10,7 +10,7 @@
 
 include "../src/Scb.php";
 
-use Golden13\Scb\Scb,Golden13\Scb\LogWrapper;
+use Golden13\Scb\Scb;
 
 $scb = Scb::getInstance();
 

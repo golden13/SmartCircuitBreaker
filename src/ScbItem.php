@@ -65,6 +65,7 @@ class ScbItem {
         if (empty($this->_serverStatus)) {
             $this->readStatus();
         }
+        $this->_updateStatusByTtl(); // check if the status needs to be updated
 
         try {
             if ($this->isClosed()) { // if the circuit breaker is closed
@@ -187,7 +188,7 @@ class ScbItem {
         if (empty($this->_serverStatus)) {
             $this->readStatus();
         }
-
+        $this->_updateStatusByTtl(); // check if the status needs to be updated
         if ($this->_serverStatus->getStatus() === Scb::STATUS_OPEN) {
             return true;
         }
@@ -198,10 +199,30 @@ class ScbItem {
         if (empty($this->_serverStatus)) {
             $this->readStatus();
         }
+        $this->_updateStatusByTtl(); // check if the status needs to be updated
+
         if ($this->_serverStatus->getStatus() === Scb::STATUS_CLOSED) {
             return true;
         }
         return false;
     }
 
+    public function getTotalFailedCalls() {
+        return $this->_serverStatus->getFailedCalls();
+    }
+
+    /**
+     * This method needed for the long-running processes
+     * @return void
+     */
+    public function _updateStatusByTtl() {
+        if ($this->_serverStatus->getLastUpdate() + $this->_conf['ttlForFail'] < time()) {
+            $this->_logger->debug("Resetting CB status in memory");
+            $this->_serverStatus = new ScbStatus($this->_name);
+        }
+    }
+
+    public function getStorage() {
+        return $this->_storage;
+    }
 }

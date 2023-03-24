@@ -7,7 +7,7 @@ use Golden13\Scb\Scb,Golden13\Scb\LogWrapper;
 $smartCircuitBreaker = Scb::getInstance();
 
 // Simple echo Logger
-// You can use any PSR-3 Logger, just change logWrapper
+// You can use any PSR-3 Logger
 $logger = new LogWrapper();
 $smartCircuitBreaker->setLogger($logger);
 
@@ -36,7 +36,7 @@ for ($i = 0; $i < 10; $i++) {
 
 
 // Call wrong url
-$smartCircuitBreaker->item("curl-item")->execute(function() {
+$smartCircuitBreaker->item("curl-item")->execute(function () {
     $url = "https://www.jgdlfkjgdfkjg.com/";
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

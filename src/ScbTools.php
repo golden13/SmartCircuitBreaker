@@ -31,14 +31,17 @@ class ScbTools {
      * @return ScbStatus
      */
     public static function json2ScbStatus($json) {
-        $array = json_decode($json, true);
-
         $name = '';
-        $status = 1;
+        $status = Scb::STATUS_CLOSED;
         $lastUpdate = 0;
         $lastRetry = 0;
         $sleep = 0;
         $failedCalls = 0;
+        $array = [];
+
+        if (!empty($json)) {
+            $array = json_decode($json, true);
+        }
 
         try {
             if (isset($array['name'])) {

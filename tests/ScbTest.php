@@ -1,17 +1,14 @@
 <?php
 declare(strict_types=1);
 
-include __DIR__ . "/../src/Scb.php";
+include_once __DIR__ . "/../src/Scb.php";
 
 use PHPUnit\Framework\TestCase;
 use Golden13\Scb\Scb;
 
-
-
 final class ScbTest extends TestCase
 {
-    protected function getCustomConfig(): array
-    {
+    protected function getCustomConfig(): array {
         return [
             'dummy-filed' => true,
             'enable' => true, // if circuit breaker logic is enabled
@@ -50,39 +47,40 @@ final class ScbTest extends TestCase
             ],
         ];
     }
-    public function testGetInstance(): void
-    {
+
+    public function testGetInstance(): void {
+        Scb::reset();
         $instance1 = Scb::getInstance();
         $instance2 = Scb::getInstance();
 
         $this->assertSame($instance1, $instance2);
     }
 
-    public function testLoadConfigDefault(): void
-    {
+    public function testLoadConfigDefault(): void {
+        Scb::reset();
         Scb::getInstance()->loadConfig();
         $conf = include dirname(__FILE__) . "/../src/config.default.php"; // default config
         $this->assertSame(Scb::getInstance()->getConfig(), $conf);
     }
 
-    public function testLoadConfigFromFile(): void
-    {
+    public function testLoadConfigFromFile(): void {
+        Scb::reset();
         $fileName = "src/config.default.php";
         Scb::getInstance()->loadConfig($fileName);
         $conf = include "src/config.default.php"; // default config
         $this->assertSame(Scb::getInstance()->getConfig(), $conf);
     }
 
-    public function testLoadConfigCustom(): void
-    {
+    public function testLoadConfigCustom(): void {
+        Scb::reset();
         $customConfig = $this->getCustomConfig();
         Scb::getInstance()->loadConfig($customConfig);
 
         $this->assertSame(Scb::getInstance()->getConfig(), $customConfig);
     }
 
-    public function testItem(): void
-    {
+    public function testItem(): void {
+        Scb::reset();
         $customConfig = [
             'numberOfErrorsToOpen' => 222,
             'ttlForFail' => 10,
@@ -96,8 +94,8 @@ final class ScbTest extends TestCase
         $this->assertEquals($customConfig['ttlForFail'], Scb::getInstance()->item("test1")->getTtlForFail());
     }
 
-    public function testBuildStorageByType(): void
-    {
+    public function testBuildStorageByType(): void {
+        Scb::reset();
         $typeFile1 = Scb::STORAGE_FILE;
 
         $storage1 = Scb::getInstance()->buildStorageByType($typeFile1);
