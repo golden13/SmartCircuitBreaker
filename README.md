@@ -5,8 +5,8 @@ About pattern: [https://en.wikipedia.org/wiki/Circuit_breaker_design_pattern](ht
 
 #### Requirements
 - PHP >= 8.0
-- Memcached for Memcache storage
-- Any PSR-3 logger on your chose.
+- Memcached php extension for Memcache storage
+- Any PSR-3 logger on your choose.
 
 _**WARNING!: The project is in the beta stage so please be careful.**_
 
