@@ -14,7 +14,7 @@ class ScbItemTest extends TestCase
         return [
             'randomPrefix' => $randomPrefix,
             'dummy-filed' => true,
-            'enable' => true, // if circuit breaker logic is enabled
+            'enabled' => true, // if circuit breaker logic is enabled
             'defaultLogLevel' => 'debug',
 
             'items' => [

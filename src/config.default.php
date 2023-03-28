@@ -3,7 +3,7 @@
  * Configuration for the Smart Circuit Breaker
  */
 $SCB_CFG = [
-    'enable' => true, // if circuit breaker logic is enabled
+    'enabled' => true, // if circuit breaker logic is enabled
     'defaultLogLevel' => 'debug',
 
     'items' => [

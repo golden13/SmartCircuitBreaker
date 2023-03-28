@@ -94,10 +94,7 @@ class Scb {
     }
 
     public function isEnabled() {
-        if ($this->_conf['enabled']) {
-            return true;
-        }
-        return false;
+        return $this->_conf['enabled'] ?? true;
     }
 
     /**
@@ -126,6 +123,12 @@ class Scb {
                 $storage = $this->buildStorageByType($conf['storage']);
             }
             $item = new ScbItem($name, $storage, $conf);
+
+            // check if the Scb is disabled
+            if (!$this->isEnabled()) {
+                $item->setIsEnabled(false);
+            }
+
             $storage->linkItem($item);
 
             $this->_items[$name] = $item;

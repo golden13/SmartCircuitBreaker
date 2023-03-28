@@ -11,7 +11,7 @@ final class ScbTest extends TestCase
     protected function getCustomConfig(): array {
         return [
             'dummy-filed' => true,
-            'enable' => true, // if circuit breaker logic is enabled
+            'enabled' => true, // if circuit breaker logic is enabled
             'defaultLogLevel' => 'debug',
 
             'items' => [
@@ -121,5 +121,17 @@ final class ScbTest extends TestCase
         $storage4 = Scb::getInstance()->buildStorageByType($typeFile4);
         $this->assertEmpty($storage4);
         //$this->assertEmpty($storage4);
+    }
+
+    public function testDisabled(): void {
+        Scb::reset();
+        $customConfig = $this->getCustomConfig();
+        // disable it
+        $customConfig['enabled'] = false;
+        Scb::getInstance()->loadConfig($customConfig);
+        $item = Scb::getInstance()->item("test1");
+
+        $this->assertFalse($item->isEnabled());
+        $this->assertFalse(Scb::getInstance()->isEnabled());
     }
 }

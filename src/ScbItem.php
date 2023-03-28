@@ -12,6 +12,11 @@ class ScbItem {
     protected $_name;
 
     /**
+     * @var bool
+     */
+    protected $_enabled = true;
+
+    /**
      * @var ScbStatus
      */
     protected $_serverStatus;
@@ -61,11 +66,25 @@ class ScbItem {
         return $this->_ignoredExceptions;
     }
 
+    public function isEnabled() {
+        return $this->_enabled ?? true;
+    }
+
     public function execute($code) {
         if (empty($this->_serverStatus)) {
             $this->readStatus();
         }
         $this->_updateStatusByTtl(); // check if the status needs to be updated
+
+        // if the Scb is disabled
+        if (!$this->isEnabled()) {
+            try {
+                $res = $code();
+                return $res;
+            } catch (\Exception $e) {
+                throw $e;
+            }
+        }
 
         try {
             if ($this->isClosed()) { // if the circuit breaker is closed
@@ -209,6 +228,10 @@ class ScbItem {
 
     public function getTotalFailedCalls() {
         return $this->_serverStatus->getFailedCalls();
+    }
+
+    public function setIsEnabled($isEnabled) {
+        $this->_enabled = $isEnabled;
     }
 
     /**
