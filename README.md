@@ -11,11 +11,11 @@ About pattern: [https://en.wikipedia.org/wiki/Circuit_breaker_design_pattern](ht
 _**WARNING!: The project is in the beta stage so please be careful.**_
 
 **TODO:**
-1. Add more Unit tests
-2. Add enable/disable logic for Scb
+1. Add more Unit tests (_in progress_)
+2. ~~Add enable/disable logic for Scb~~ (_done_)
 3. Add Redis storage
 4. Add Cascading logic to prevent dependant calls
-5. More examples
+5. More examples (_in progress_)
 6. Refactoring for Logging
 
 
@@ -39,7 +39,7 @@ Scb configuration is a php array. By default, the Scb uses the configuration sto
 ```php
 [
     // Enable circuit breaker logic
-    'enable' => true,
+    'enabled' => true,
     
     // default log level
     'defaultLogLevel' => 'debug',
@@ -172,3 +172,17 @@ $smartCircuitBreaker->item("curl-item")->execute(function() {
 For now only 2 types of storages are supported:
 1. File storage
 2. Memcache storage
+
+
+### File Storage
+
+If you have only one PHP server, I would recommend to use the File Storage. In this case your code will be totally independant on any external services and network issues.
+Everything needed for the Circuit Breaker to work will be stored locally on the file system.
+
+### Memcache Storage
+
+In the case of 2 or more PHP servers, Memcache storage is probably the best solution.
+You can still use the File Storage if you wish, but in this case, each of your PHP servers will have completely separate storage for the circuit breaker cache.
+It's not that bad and can even provide some of the benefits over a centralized repository, but sometimes it's better to have one place where you can control your Circuit Breaker cache. 
+
+ 
